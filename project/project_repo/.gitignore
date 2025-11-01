@@ -1,8 +1,12 @@
 # Data
 /data/
-
+notebooks/artifacts/X_test.csv
+notebooks/artifacts/y_test.csv
 # Mac OS-specific storage files
 .DS_Store
+
+#mlruns in development
+mlruns/
 
 # vim
 *.swp

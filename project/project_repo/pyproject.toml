@@ -27,6 +27,8 @@ dependencies = [
     "python-dotenv",
     "ruff",
     "scikit-learn",
+    "mlflow",
+    "xgboost",
 ]
 requires-python = "~=3.12.0"
 
