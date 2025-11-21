@@ -1,7 +1,6 @@
 # Data
 /data/
-notebooks/artifacts/X_test.csv
-notebooks/artifacts/y_test.csv
+notebooks/artifacts/
 # Mac OS-specific storage files
 .DS_Store
 
