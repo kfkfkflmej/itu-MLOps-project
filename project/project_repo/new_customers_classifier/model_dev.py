@@ -1,3 +1,30 @@
+"""This script is used to develop and track machine learning models for new customer classification using XGBoost and Logistic Regression.
+It preprocesses the data, performs hyperparameter tuning, evaluates model performance, and logs the experiments
+using MLflow.
+
+Usage:
+    python model_dev.py <data_gold_path>
+
+Arguments:
+    data_gold_path: Path to the CSV file containing the preprocessed data.
+
+Requirements:
+    - pandas
+    - xgboost
+    - scikit-learn
+    - mlflow
+    - scipy
+    - joblib
+
+    
+Note:    Ensure that the necessary directories for artifacts and MLflow tracking are created before running the script.
+
+Add: What do we want to print during the run?
+    What do we move into a utilities.py script?
+    Do we handle error messages with GO TOs or try/except?
+    Do we want to change the naming methods for experiments/models/artifacts?
+
+"""
 # edit imports as needed
 import os
 import shutil
@@ -66,6 +93,7 @@ print(f"Training data length: {len(data)}")
 data.head(5)
 
 # Preprocess data
+print("Preprocessing data...")
 data = data.drop(["lead_id", "customer_code", "date_part"], axis=1)
 
 cat_cols = ["customer_group", "onboarding", "bin_source", "source"]
@@ -91,7 +119,7 @@ X_train, X_test, y_train, y_test = train_test_split(
     X, y, random_state=42, test_size=0.15, stratify=y
 )
 
-
+print("Training...")
 # Track XGB experiment    
 with mlflow.start_run(experiment_id=experiment_id) as run:
     model = XGBRFClassifier(random_state=42)
@@ -202,7 +230,7 @@ model_results[lr_model_path] = model_classification_report
 print(model_classification_report["weighted avg"]["f1-score"])
 
 # Save column list and model results
-
+print("Saving column list and model results...")
 column_list_path = './artifacts/columns_list.json'
 with open(column_list_path, 'w+') as columns_file:
     columns = {'column_names': list(X_train.columns)}
