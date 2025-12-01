@@ -94,7 +94,7 @@ data.head(5)
 
 # Preprocess data
 print("Preprocessing data...")
-data = data.drop(["lead_id", "customer_code", "date_part"], axis=1)
+data = data.drop(["lead_id", "customer_code", "date_part", "domain", "country"], axis=1)
 
 cat_cols = ["customer_group", "onboarding", "bin_source", "source"]
 cat_vars = data[cat_cols]

@@ -10,6 +10,8 @@ from sklearn.preprocessing import MinMaxScaler
 import joblib
 
 
+os.makedirs("output", exist_ok=True)
+
 # we can have this step to ensure the correct formatting, but maybe not necessary
 #pd.set_option('display.float_format',lambda x: "%.3f" % x)
 warnings.filterwarnings('ignore')
@@ -44,7 +46,7 @@ os.makedirs("artifacts",exist_ok=True)
 
 # load the raw data
 print("Loading training data")
-data = pd.read_csv("./artifacts/raw_data.csv")
+data = pd.read_csv("./dvc_remote_storage/raw_data.csv")
 #print("Total rows:", data.count())
 #display(data.head(5))
 
