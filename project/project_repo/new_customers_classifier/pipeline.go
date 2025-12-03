@@ -42,15 +42,11 @@ func Build(ctx context.Context) error {
 		WithExec([]string{"python", "preprocessing.py"}).
 		WithExec([]string{"python", "model_dev.py", "artifacts/train_data_gold.csv"}).
 		WithExec([]string{"python", "model_selection.py"}).
-		WithExec([]string{"python", "deploy.py"}).
-		WithExec([]string{"mkdir", "-p", "output"}).
-		WithExec([]string{"cp", "-r", "artifacts", "output/"}).
-		WithExec([]string{"cp", "-r", "new_customers_classifier", "output/"}).
-		WithExec([]string{"cp", "README.md", "LICENSE", "output/"})
+		WithExec([]string{"python", "deploy.py"})
 
 	_, err = python.
-		Directory("output").
-		Export(ctx, "output")
+		Directory("artifacts").
+		Export(ctx, "output/artifacts")
 	if err != nil {
 		return err
 	}
