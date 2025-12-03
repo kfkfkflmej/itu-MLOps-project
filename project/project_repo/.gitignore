@@ -1,6 +1,7 @@
 # Data
 /data/
 notebooks/artifacts/
+new_customers_classifier/artifacts/
 # Mac OS-specific storage files
 .DS_Store
 
