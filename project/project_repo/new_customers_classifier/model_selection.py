@@ -83,6 +83,9 @@ if run_id is not None:
 
     model_details = dict(model_details)
 
+with open("output/results.txt", "w") as f:
+    f.write("Success!")
+
 
 deployment_config = {
     "model_name": model_details['name'],

@@ -10,6 +10,8 @@ import joblib
 import utils
 
 
+os.makedirs("output", exist_ok=True)
+
 # we can have this step to ensure the correct formatting, but maybe not necessary
 
 warnings.filterwarnings('ignore')
