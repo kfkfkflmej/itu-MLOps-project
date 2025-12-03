@@ -1,23 +1,14 @@
-model_version = 1
 
+import json
 from mlflow.tracking import MlflowClient
+import utils
 
 client = MlflowClient()
 
-
-def wait_for_deployment(model_name, model_version, stage='Staging'):
-    status = False
-    while not status:
-        model_version_details = dict(
-            client.get_model_version(name=model_name,version=model_version)
-            )
-        if model_version_details['current_stage'] == stage:
-            print(f'Transition completed to {stage}')
-            status = True
-            break
-        else:
-            time.sleep(2)
-    return status
+with open("deployment_config.json", "r") as f:
+        config = json.load(f)
+        model_name = config["model_name"]
+        model_version = config["model_version"]
 
 model_version_details = dict(client.get_model_version(name=model_name,version=model_version))
 model_status = True
@@ -27,6 +18,4 @@ if model_version_details['current_stage'] != 'Staging':
         version=model_version,stage="Staging", 
         archive_existing_versions=True
     )
-    model_status = wait_for_deployment(model_name, model_version, 'Staging')
-else:
-    print('Model already in staging')
+    model_status = utils.wait_for_deployment(client, model_name, model_version, 'Staging')

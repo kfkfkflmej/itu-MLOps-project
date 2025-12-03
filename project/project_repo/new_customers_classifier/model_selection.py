@@ -4,30 +4,14 @@ import time
 
 import mlflow
 import pandas as pd
-from mlflow.entities.model_registry.model_version_status import ModelVersionStatus
 from mlflow.tracking import MlflowClient
-
+import utils
 
 # Configuration
 current_date = datetime.datetime.now().strftime("%Y_%B_%d")
 artifact_path = "model"
 model_name = "lead_model"
 experiment_name = current_date
-
-
-def wait_until_ready(model_name: str, model_version: int, max_checks: int = 10, sleep_secs: int = 1) -> None:
-    """Poll the model registry until the model version is READY or max_checks is reached."""
-    client = MlflowClient()
-    for _ in range(max_checks):
-        model_version_details = client.get_model_version(
-            name=model_name,
-            version=model_version,
-        )
-        status = ModelVersionStatus.from_string(model_version_details.status)
-        print(f"Model status: {ModelVersionStatus.to_string(status)}")
-        if status == ModelVersionStatus.READY:
-            break
-        time.sleep(sleep_secs)
 
 
 # Get best run in today's experiment (by f1_score)
@@ -70,8 +54,6 @@ if prod_model_exists:
     prod_model_run_id = prod_model["run_id"]
 
 
-
-
 # Decide whether to register a new model
 model_status = {}
 run_id = None
@@ -97,7 +79,7 @@ if run_id is not None:
     )
 
     model_details = mlflow.register_model(model_uri=model_uri, name=model_name)
-    wait_until_ready(model_details.name, model_details.version)
+    utils.wait_until_ready(model_details.name, model_details.version)
 
     model_details = dict(model_details)
 
@@ -105,3 +87,10 @@ with open("output/results.txt", "w") as f:
     f.write("Success!")
 
 
+deployment_config = {
+    "model_name": model_details['name'],
+    "model_version": model_details['version']
+}
+
+with open("deployment_config.json", "w") as f:
+    json.dump(deployment_config, f)
