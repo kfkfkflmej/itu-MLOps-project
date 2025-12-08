@@ -39,7 +39,7 @@ func Build(ctx context.Context) error {
 		WithExec([]string{"touch", "new_customers_classifier/__init__.py"}).
 		WithExec([]string{"touch", "README.md", "LICENSE"}).
 		WithExec([]string{"pip", "install", "."}).
-		WithExec([]string{"python", "preprocessing.py"}).
+		WithExec([]string{"python", "preprocessing.py", "/app/dvc_remote_storage/raw_data.csv"}).
 		WithExec([]string{"python", "model_dev.py", "artifacts/train_data_gold.csv"}).
 		WithExec([]string{"python", "model_selection.py"}).
 		WithExec([]string{"python", "deploy.py"})

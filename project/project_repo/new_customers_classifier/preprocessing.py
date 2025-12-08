@@ -8,6 +8,7 @@ import numpy as np
 from sklearn.preprocessing import MinMaxScaler
 import joblib
 import utils
+import sys
 
 
 os.makedirs("output", exist_ok=True)
@@ -21,7 +22,7 @@ warnings.filterwarnings('ignore')
 os.makedirs("artifacts",exist_ok=True)
 
 # load the raw data
-data = pd.read_csv("./artifacts/raw_data.csv")
+data = pd.read_csv(sys.argv[1])
 #print("Total rows:", data.count())
 #display(data.head(5))
 

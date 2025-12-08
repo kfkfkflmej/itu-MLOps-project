@@ -1,4 +1,4 @@
-module daggerpipeline
+module pipline
 
 go 1.25.0
 
