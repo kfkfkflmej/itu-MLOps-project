@@ -13,7 +13,7 @@ TRAIN_DATA_GOLD_PATH = os.path.join(ARTIFACTS_DIR, "train_data_gold.csv")
 X_TEST_PATH = os.path.join(ARTIFACTS_DIR, "X_test.csv")
 Y_TEST_PATH = os.path.join(ARTIFACTS_DIR, "y_test.csv")
 
-#----
+#more paths
 DATE_LIMITS_PATH = os.path.join(ARTIFACTS_DIR, "date_limits.json")
 OUTLIER_SUMMARY_PATH = os.path.join(ARTIFACTS_DIR, "outlier_summary.csv")
 CAT_MISSING_IMPUTE_PATH = os.path.join(ARTIFACTS_DIR, "cat_missing_impute.csv")
@@ -21,6 +21,7 @@ SCALER_PATH = os.path.join(ARTIFACTS_DIR, "scaler.pkl")
 COLUMNS_DRIFT_PATH = os.path.join(ARTIFACTS_DIR, "columns_drift.json")
 COLUMNS_LIST_PATH = os.path.join(ARTIFACTS_DIR, "columns_list.json")
 MODEL_RESULTS_PATH = os.path.join(ARTIFACTS_DIR, "model_results.json")
+DEPLOYMENT_CONFIG_PATH = "deployment_config.json"
 
 
 
@@ -46,3 +47,4 @@ MODEL_NAME = "lead_model"
 ARTIFACT_PATH_NAME = "model" # The name of the folder inside MLflow artifacts
 MAX_DATE_STR = "2024-01-31"
 MIN_DATE_STR = "2024-01-01"
+DEPLOYMENT_STAGE = "Staging"

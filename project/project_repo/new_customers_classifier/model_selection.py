@@ -88,5 +88,5 @@ deployment_config = {
     "model_version": model_details['version']
 }
 
-with open("deployment_config.json", "w") as f:
+with open(config.DEPLOYMENT_CONFIG_PATH, "w") as f:
     json.dump(deployment_config, f)
