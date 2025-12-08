@@ -43,7 +43,7 @@ data = data[(data["date_part"] >= min_date) & (data["date_part"] <= max_date)]
 min_date = data["date_part"].min()
 max_date = data["date_part"].max()
 date_limits = {"min_date": str(min_date), "max_date": str(max_date)}
-with open("./artifacts/date_limits.json", "w") as f:
+with open("./data/interrim/date_limits.json", "w") as f:
     json.dump(date_limits, f)
 
 
@@ -84,11 +84,11 @@ cat_vars = data.loc[:, (data.dtypes=="object")]
 cont_vars = cont_vars.apply(lambda x: x.clip(lower = (x.mean()-2*x.std()),
                                              upper = (x.mean()+2*x.std())))
 outlier_summary = cont_vars.apply(utils.describe_numeric_col).T
-outlier_summary.to_csv('./artifacts/outlier_summary.csv')
+outlier_summary.to_csv('./data/interrim/outlier_summary.csv')
 
 # impute the data
 cat_missing_impute = cat_vars.mode(numeric_only=False, dropna=True)
-cat_missing_impute.to_csv("./artifacts/cat_missing_impute.csv")
+cat_missing_impute.to_csv("./data/interrim/cat_missing_impute.csv")
 
 # continuous variables missing values
 cont_vars = cont_vars.apply(utils.impute_missing_values)

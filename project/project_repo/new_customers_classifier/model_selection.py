@@ -28,7 +28,7 @@ train_model_score = experiment_best["metrics.f1_score"]
 
 
 # Load per-model results and identify best model by weighted F1
-with open("./artifacts/model_results.json", "r") as f:
+with open("./models/model_results.json", "r") as f:
     model_results = json.load(f)
 
 results_df = pd.DataFrame(
@@ -78,13 +78,10 @@ if run_id is not None:
         artifact_path=artifact_path,
     )
 
-    model_details = mlflow.register_model(model_uri=model_uri, name=model_name)
+    model_details = mlflow.register_model(model_uri=model_uri, name='Best_Lead_Model')
     utils.wait_until_ready(model_details.name, model_details.version)
 
     model_details = dict(model_details)
-
-with open("output/results.txt", "w") as f:
-    f.write("Success!")
 
 
 deployment_config = {
@@ -92,5 +89,5 @@ deployment_config = {
     "model_version": model_details['version']
 }
 
-with open("deployment_config.json", "w") as f:
+with open("./models/deployment_config.json", "w") as f:
     json.dump(deployment_config, f)

@@ -95,7 +95,7 @@ X_train, X_test, y_train, y_test = train_test_split(
 # Track XGB experiment    
 with mlflow.start_run(experiment_id=experiment_id) as run:
     model = XGBRFClassifier(random_state=42)
-    xgb_model_path = "./artifacts/lead_model_xgb.pkl"
+    xgb_model_path = "./models/lead_model_xgb.pkl"
 
     params = {
         "learning_rate": uniform(1e-2, 3e-1),
@@ -129,7 +129,7 @@ with mlflow.start_run(experiment_id=experiment_id) as run:
 # Track LR experiment 
 with mlflow.start_run(experiment_id=experiment_id) as run:
     model = LogisticRegression()
-    lr_model_path = "./artifacts/lead_model_lr.pkl"
+    lr_model_path = "./models/lead_model_lr.pkl"
 
     params = {
               'solver': ["newton-cg", "lbfgs", "liblinear", "sag", "saga"],
@@ -181,11 +181,11 @@ conf_matrix = confusion_matrix(y_train, y_pred_train)
 model_results[lr_model_path] = model_classification_report
 
 # Save column list and model results
-column_list_path = './artifacts/columns_list.json'
+column_list_path = './models/columns_list.json'
 with open(column_list_path, 'w+') as columns_file:
     columns = {'column_names': list(X_train.columns)}
     json.dump(columns, columns_file)
 
-model_results_path = "./artifacts/model_results.json"
+model_results_path = "./models/model_results.json"
 with open(model_results_path, 'w+') as results_file:
     json.dump(model_results, results_file)
