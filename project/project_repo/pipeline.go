@@ -27,7 +27,6 @@ func Build(ctx context.Context) error {
 
 	// 1. Setup Resources (Host files, caches)
 	src := client.Host().Directory(".")
-	dataFile := client.Host().File("raw_data.csv")
 	pipCache := create_cache(client, "pip_cache")
 
 	// 2. Setup Container Base
@@ -44,11 +43,11 @@ func Build(ctx context.Context) error {
 	python = install_requirements(python)
 
 	// 5. Setup DVC (Git init + Pull)
-	python = update_data(python, dataFile)
+	python = pull_data(python)
 
 	// 6. Run ML Pipeline Stages
-	python = run_script(python, "new_customers_classifier/preprocessing.py", "/app/dvc_remote_storage/raw_data.csv")
-	python = run_script(python, "new_customers_classifier/model_dev.py", "artifacts/train_data_gold.csv")
+	python = run_script(python, "new_customers_classifier/preprocessing.py", "/app/data/raw/raw_data.csv")
+	python = run_script(python, "new_customers_classifier/model_dev.py", "/app/data/processed/train_data_gold.csv")
 	python = run_script(python, "new_customers_classifier/model_selection.py")
 	python = run_script(python, "new_customers_classifier/deploy.py")
 
@@ -84,10 +83,9 @@ func install_requirements(container *dagger.Container) *dagger.Container {
 	return container.WithExec([]string{"pip", "install", "."})
 }
 
-func update_data(container *dagger.Container, dataFile *dagger.File) *dagger.Container {
+func pull_data(container *dagger.Container) *dagger.Container {
 	container = container.WithExec([]string{"git", "init"})
-	container = container.WithMountedFile("/app/dvc_remote_storage/raw_data.csv", dataFile)
-	container = container.WithExec([]string{"dvc", "pull"})
+	container = container.WithExec([]string{"dvc", "update", "data/raw/raw_data.csv.dvc"})
 
 	return container
 }
