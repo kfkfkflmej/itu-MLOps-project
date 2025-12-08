@@ -52,7 +52,7 @@ func Build(ctx context.Context) error {
 	python = run_script(python, "new_customers_classifier/deploy.py")
 
 	// 7. Export Artifacts
-	if err := export_artifacts(python, ctx, "artifacts"); err != nil {
+	if err := export_artifacts(python, ctx, "models"); err != nil {
 		return err
 	}
 
@@ -97,7 +97,7 @@ func run_script(container *dagger.Container, scriptPath string, args ...string) 
 
 func export_artifacts(container *dagger.Container, ctx context.Context, exportPath string) error {
 	_, err := container.
-		Directory("artifacts").
+		Directory("models").
 		Export(ctx, exportPath)
 	return err
 }
