@@ -1,5 +1,5 @@
 import os
-#import datetime
+import datetime
 
 #directories
 ARTIFACTS_DIR = "artifacts"
@@ -44,3 +44,5 @@ CURRENT_DATE = datetime.datetime.now().strftime("%Y_%B_%d")
 EXPERIMENT_NAME = CURRENT_DATE
 MODEL_NAME = "lead_model"
 ARTIFACT_PATH_NAME = "model" # The name of the folder inside MLflow artifacts
+MAX_DATE_STR = "2024-01-31"
+MIN_DATE_STR = "2024-01-01"
