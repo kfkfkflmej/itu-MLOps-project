@@ -57,9 +57,12 @@ jobs:
           cache: false
       - run: echo "✅ Go has been set up with version ${{ matrix.go-version }}."
 
-      - name: Train Model
+      - name: Test Model
         uses: dagger/dagger-for-github@v6
         with:
           verb: run
           args: go run "test_script.go"
           version:
+          
+      - name: Run Model Inference Test Action
+        uses: lasselundstenjensen/itu-sdse-project-model-validator@main
