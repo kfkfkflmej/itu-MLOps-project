@@ -100,7 +100,7 @@ cat_vars.apply(lambda x: pd.Series([x.count(), x.isnull().sum()], index = ['Coun
 
 
 # data standardisation
-scaler_path = "./artifacts/scaler.pkl"
+scaler_path = "./data/interrim/scaler.pkl"
 
 scaler = MinMaxScaler()
 scaler.fit(cont_vars)
@@ -133,8 +133,8 @@ data['bin_source'] = data['source'].map(mapping)
 
 # data columns drift
 data_columns = list(data.columns)
-with open('./artifacts/columns_drift.json','w+') as f:           
+with open('./data/interrim/columns_drift.json','w+') as f:           
     json.dump(data_columns,f)
 
 # save the cleaned data
-data.to_csv('./artifacts/train_data_gold.csv', index=False)
+data.to_csv('./data/processed/train_data_gold.csv', index=False)
