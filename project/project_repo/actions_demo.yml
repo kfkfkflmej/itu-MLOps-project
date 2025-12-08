@@ -1,0 +1,97 @@
+name: GitHub Actions Demo
+run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
+on: [push]
+jobs:
+  Explore-GitHub-Actions:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
+      - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
+      - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
+      - name: Check out repository code
+        uses: actions/checkout@v5
+      - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
+      - run: echo "🖥️ The workflow is now ready to test your code on the runner."
+      - name: List files in the repository
+        run: |
+          ls ${{ github.workspace }}
+      - run: echo "🍏 This job's status is ${{ job.status }}."
+
+
+
+name: Log & Test Artifacts incl. Model
+run-name: Logging Artifacts & Testing Model 🤘
+on:
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  train_and_upload:
+    name: Train and Upload Model
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: 1.23.3
+          cache: false
+
+      - name: Train Model
+        uses: dagger/dagger-for-github@v6
+        with:
+          verb: run
+          args: go run pipeline.go
+          version: "0.14.0"
+
+      - name: Upload All Artifacts
+        uses: actions/upload-artifact@v4.4.0
+        with:
+          name: all-artifacts
+          path: artifacts/
+
+      - name: Upload Best Model Artifact
+        uses: actions/upload-artifact@v4.4.0
+        with:
+          name: model
+          path: artifacts/model.pkl
+
+  test_model:
+    needs: train_and_upload
+    name: Unit Test Model Artifacts
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: all-artifacts
+          path: downloaded_artifacts/
+
+      - name: List downloaded artifacts
+        run: |
+          echo "Listing files in downloaded_artifacts directory:"
+          ls -la downloaded_artifacts/
+
+      - name: Verify Artifacts
+        run: |
+          REQUIRED_FILES=("best_experiment.pkl" "cat_missing_impute.csv" "columns_drift.json" "columns_list.json" "date_limits.json" "lr_model.pkl" "model.pkl" "model_results.json" "outlier_summary.csv" "raw_data.csv" "scaler.pkl" "train_data.csv" "train_data_gold.csv" "xgboost_model.json" "xgboost_model.pkl")
+
+          for file in "${REQUIRED_FILES[@]}"; do
+            if [ -f "downloaded_artifacts/$file" ]; then
+              echo "Found $file"
+            else
+              echo "Missing $file"
+              exit 1
+            fi
+          done
+
+          echo "All required files are present."
+
+      - name: Run Model Inference Test Action
+        uses: lasselundstenjensen/itu-sdse-project-model-validator@main
