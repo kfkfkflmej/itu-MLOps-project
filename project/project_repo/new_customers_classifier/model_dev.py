@@ -47,7 +47,7 @@ import sys
 import utils
 from new_customers_classifier import config
 
-os.makedirs(os.makedirs(config.ARTIFACTS_DIR, exist_ok=True))
+os.makedirs(config.ARTIFACTS_DIR, exist_ok=True)
 os.makedirs("mlruns", exist_ok=True)
 os.makedirs("mlruns/.trash", exist_ok=True)
 

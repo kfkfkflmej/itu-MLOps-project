@@ -20,7 +20,7 @@ warnings.filterwarnings('ignore')
 os.makedirs(config.ARTIFACTS_DIR, exist_ok=True)
 
 # load the raw data
-pd.read_csv(config.RAW_DATA_PATH)
+data = pd.read_csv(config.RAW_DATA_PATH)
 #print("Total rows:", data.count())
 #display(data.head(5))
 
