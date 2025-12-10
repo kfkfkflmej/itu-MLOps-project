@@ -58,7 +58,10 @@ experiment_id = mlflow.get_experiment_by_name(config.EXPERIMENT_NAME).experiment
 
 
 # Load data
-data_gold_path=sys.argv[1]
+if len(sys.argv) > 1:
+    data_gold_path = sys.argv[1]
+else:
+    data_gold_path = config.TRAIN_DATA_GOLD_PATH
 data = pd.read_csv(data_gold_path)
 
 

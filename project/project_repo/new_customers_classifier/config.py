@@ -1,16 +1,13 @@
 import os
 import datetime
 
-#directoies
+#directories and paths
 DATA_DIR = "data"
-INTERIM_DATA_DIR = os.path.join(DATA_DIR, "interrim") 
+INTERIM_DATA_DIR = os.path.join(DATA_DIR, "interim") 
 PROCESSED_DATA_DIR = os.path.join(DATA_DIR, "processed")
 EXTERNAL_DATA_DIR = os.path.join(DATA_DIR, "external") #currently not used?
 MODELS_DIR = "models"
 OUTPUT_DIR = "output"
-# ARTIFACTS_DIR = "artifacts" (no longer in use)
-
-#paths
 RAW_DATA_PATH = os.path.join(DATA_DIR, "raw", "raw_data.csv")
 TRAINING_DATA_PATH = os.path.join(PROCESSED_DATA_DIR, "training_data.csv")
 TRAIN_DATA_GOLD_PATH = os.path.join(PROCESSED_DATA_DIR, "train_data_gold.csv")
@@ -26,7 +23,7 @@ COLUMNS_DRIFT_PATH = os.path.join(INTERIM_DATA_DIR, "columns_drift.json")
 X_TEST_PATH = os.path.join(INTERIM_DATA_DIR, "X_test.csv")
 Y_TEST_PATH = os.path.join(INTERIM_DATA_DIR, "y_test.csv")
 
-#---
+#model related
 XGBOOST_MODEL_PKL = os.path.join(MODELS_DIR, "lead_model_xgb.pkl")
 XGBOOST_MODEL_JSON = os.path.join(MODELS_DIR, "lead_model_xgboost.json")
 LR_MODEL_PATH = os.path.join(MODELS_DIR, "lead_model_lr.pkl")

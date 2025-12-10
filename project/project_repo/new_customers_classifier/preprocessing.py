@@ -21,10 +21,11 @@ warnings.filterwarnings('ignore')
 os.makedirs(config.INTERIM_DATA_DIR, exist_ok=True)
 os.makedirs(config.PROCESSED_DATA_DIR, exist_ok=True)
 
-# load the raw data
-data = pd.read_csv(sys.argv[1])
-#print("Total rows:", data.count())
-#display(data.head(5))
+# load the raw data (fallback to ensure it works with Makefile)
+if len(sys.argv) > 1:
+    data = pd.read_csv(sys.argv[1])
+else:
+    data = pd.read_csv(config.RAW_DATA_PATH)
 
 
 # Time limit the data
