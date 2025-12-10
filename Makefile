@@ -61,7 +61,7 @@ lint:
 
 ## Run tests (Pytest) on tests/ folder
 test:
-	pytest tests/
+	dagger run go test -v
 
 #################################################################################
 # MODEL PIPELINE                                                                #
