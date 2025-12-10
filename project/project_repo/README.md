@@ -1,10 +1,12 @@
-# new_customers_classifier
+# MLOps Project 2025 - The Deploy Squad
 
 <a target="_blank" href="https://cookiecutter-data-science.drivendata.org/">
     <img src="https://img.shields.io/badge/CCDS-Project%20template-328F97?logo=cookiecutter" />
 </a>
 
-A system that can predict whether a user will become a new customer.
+This project is related to the Data Science in Production: MLOps and Software Engineering course. We develop a system that can predict whether a user will become a new customer. The original repository can be found [here](https://github.com/lasselundstenjensen/itu-sdse-project)
+
+![Goal](./references/project-architecture.png)
 
 ## Project Organization
 
@@ -57,5 +59,20 @@ A system that can predict whether a user will become a new customer.
     └── plots.py                <- Code to create visualizations
 ```
 
+# How to run the code
+
+## Artifact creation
+
+#### Run in a container
+
+#### Local testing
+
+## Inference testing
+
+## Maintaining code quality
+
+## Code releases
+
+# Code decisions and reflections
 --------
 

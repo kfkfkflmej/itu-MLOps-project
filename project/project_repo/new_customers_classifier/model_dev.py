@@ -90,6 +90,7 @@ X_train, X_test, y_train, y_test = train_test_split(
 # Track XGB experiment    
 with mlflow.start_run(experiment_id=experiment_id) as run:
     model = XGBRFClassifier(random_state=42)
+
     xgb_model_path = config.XGBOOST_MODEL_PKL
 
     params = {
@@ -124,6 +125,7 @@ with mlflow.start_run(experiment_id=experiment_id) as run:
 # Track LR experiment 
 with mlflow.start_run(experiment_id=experiment_id) as run:
     model = LogisticRegression()
+
     lr_model_path = config.LR_MODEL_PATH
 
     params = {

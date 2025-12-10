@@ -8,6 +8,7 @@ import numpy as np
 from sklearn.preprocessing import MinMaxScaler
 import joblib
 import utils
+import sys
 from new_customers_classifier import config
 
 os.makedirs(config.OUTPUT_DIR, exist_ok=True)
@@ -20,7 +21,7 @@ warnings.filterwarnings('ignore')
 os.makedirs(config.ARTIFACTS_DIR, exist_ok=True)
 
 # load the raw data
-data = pd.read_csv(config.RAW_DATA_PATH)
+data = pd.read_csv(sys.argv[1])
 #print("Total rows:", data.count())
 #display(data.head(5))
 
@@ -41,6 +42,8 @@ data = data[(data["date_part"] >= min_date) & (data["date_part"] <= max_date)]
 min_date = data["date_part"].min()
 max_date = data["date_part"].max()
 date_limits = {"min_date": str(min_date), "max_date": str(max_date)}
+
+
 with open(config.DATE_LIMITS_PATH, "w") as f:
     json.dump(date_limits, f)
 
@@ -82,6 +85,7 @@ cat_vars = data.loc[:, (data.dtypes=="object")]
 cont_vars = cont_vars.apply(lambda x: x.clip(lower = (x.mean()-2*x.std()),
                                              upper = (x.mean()+2*x.std())))
 outlier_summary = cont_vars.apply(utils.describe_numeric_col).T
+
 outlier_summary.to_csv(config.OUTLIER_SUMMARY_PATH)
 
 # impute the data
@@ -131,6 +135,7 @@ data['bin_source'] = data['source'].map(mapping)
 
 # data columns drift
 data_columns = list(data.columns)
+
 with open(config.COLUMNS_DRIFT_PATH,'w+') as f:           
     json.dump(data_columns,f)
 

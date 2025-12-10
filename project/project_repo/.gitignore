@@ -1,5 +1,5 @@
 # Data
-/data/
+data/raw/raw_data.csv
 notebooks/artifacts/
 new_customers_classifier/artifacts/
 # Mac OS-specific storage files

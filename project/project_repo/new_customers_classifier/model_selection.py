@@ -75,12 +75,10 @@ if run_id is not None:
     )
 
     model_details = mlflow.register_model(model_uri=model_uri, name=config.MODEL_NAME)
+
     utils.wait_until_ready(model_details.name, model_details.version)
 
     model_details = dict(model_details)
-
-with open("output/results.txt", "w") as f:
-    f.write("Success!")
 
 
 deployment_config = {
