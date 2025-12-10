@@ -12,13 +12,13 @@ func main() {
 	ctx := context.Background()
 
 	// Run the stages of the pipeline
-	if err := Build(ctx); err != nil {
+	if err := Build(ctx, false); err != nil {
 		fmt.Println("Error:", err)
 		panic(err)
 	}
 }
 
-func Build(ctx context.Context) error {
+func Build(ctx context.Context, isTesting bool) error {
 	client, err := dagger.Connect(ctx)
 	if err != nil {
 		return err
@@ -51,9 +51,20 @@ func Build(ctx context.Context) error {
 	python = run_script(python, "new_customers_classifier/model_selection.py")
 	python = run_script(python, "new_customers_classifier/deploy.py")
 
-	// 7. Export Artifacts
-	if err := export_artifacts(python, ctx, "models"); err != nil {
-		return err
+	// 7. Verify or Export (Testing Switch)
+	if isTesting {
+		// Run verification script inside the container
+		_, err = python.
+			WithExec([]string{"python", "tests/check_artifacts.py"}).
+			Stderr(ctx)
+		if err != nil {
+			return fmt.Errorf("verification tests failed: %w", err)
+		}
+	} else {
+		// Export Artifacts to host
+		if err := export_artifacts(python, ctx, "models"); err != nil {
+			return err
+		}
 	}
 
 	return nil
