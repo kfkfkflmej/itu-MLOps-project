@@ -17,8 +17,9 @@ os.makedirs(config.OUTPUT_DIR, exist_ok=True)
 
 warnings.filterwarnings('ignore')
 
-# to make sure the artifacts directory exists
-os.makedirs(config.ARTIFACTS_DIR, exist_ok=True)
+# to make sure the data directory exists
+os.makedirs(config.INTERIM_DATA_DIR, exist_ok=True)
+os.makedirs(config.PROCESSED_DATA_DIR, exist_ok=True)
 
 # load the raw data
 data = pd.read_csv(sys.argv[1])
@@ -108,7 +109,6 @@ scaler = MinMaxScaler()
 scaler.fit(cont_vars)
 
 joblib.dump(value=scaler, filename=scaler_path)
-print("Saved scaler in artifacts")
 
 cont_vars = pd.DataFrame(scaler.transform(cont_vars), columns=cont_vars.columns)
 #cont_vars

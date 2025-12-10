@@ -47,7 +47,7 @@ import sys
 import utils
 from new_customers_classifier import config
 
-os.makedirs(config.ARTIFACTS_DIR, exist_ok=True)
+os.makedirs(config.MODELS_DIR, exist_ok=True)
 os.makedirs("mlruns", exist_ok=True)
 os.makedirs("mlruns/.trash", exist_ok=True)
 
@@ -113,7 +113,7 @@ with mlflow.start_run(experiment_id=experiment_id) as run:
  
     # log artifacts
     mlflow.log_metric('f1_score', f1_score(y_test, y_pred_test))
-    mlflow.log_artifacts(config.ARTIFACTS_DIR, artifact_path=config.ARTIFACT_PATH_NAME)
+    mlflow.log_artifacts(config.MODELS_DIR, artifact_path=config.ARTIFACT_PATH_NAME)
     mlflow.log_param("data_version", "00000")
     
     # store model for model interpretability
@@ -144,7 +144,7 @@ with mlflow.start_run(experiment_id=experiment_id) as run:
    
     # log artifacts
     mlflow.log_metric('f1_score', f1_score(y_test, y_pred_test))
-    mlflow.log_artifacts(config.ARTIFACTS_DIR, artifact_path=config.ARTIFACT_PATH_NAME)
+    mlflow.log_artifacts(config.MODELS_DIR, artifact_path=config.ARTIFACT_PATH_NAME)
     mlflow.log_param("data_version", "00000")
     
     # store model for model interpretability

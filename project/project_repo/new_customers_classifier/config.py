@@ -11,7 +11,7 @@ OUTPUT_DIR = "output"
 # ARTIFACTS_DIR = "artifacts" (no longer in use)
 
 #paths
-#RAW_DATA_PATH = os.path.join(ARTIFACTS_DIR, "raw_data.csv") (no longer in use)
+RAW_DATA_PATH = os.path.join(DATA_DIR, "raw", "raw_data.csv")
 TRAINING_DATA_PATH = os.path.join(PROCESSED_DATA_DIR, "training_data.csv")
 TRAIN_DATA_GOLD_PATH = os.path.join(PROCESSED_DATA_DIR, "train_data_gold.csv")
 
