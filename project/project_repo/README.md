@@ -6,7 +6,7 @@
 
 This project is related to the Data Science in Production: MLOps and Software Engineering course. We develop a system that can predict whether a user will become a new customer. The original repository can be found [here](https://github.com/lasselundstenjensen/itu-sdse-project)
 
-![Goal](./references/project-architecture.png)
+![Goal](./references/docs/project-architecture.png)
 
 ## Project Organization
 
