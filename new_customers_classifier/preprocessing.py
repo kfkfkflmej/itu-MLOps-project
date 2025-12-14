@@ -9,27 +9,28 @@ from sklearn.preprocessing import MinMaxScaler
 import joblib
 import utils
 import sys
+from new_customers_classifier import config
 
-
-os.makedirs("output", exist_ok=True)
+os.makedirs(config.OUTPUT_DIR, exist_ok=True)
 
 # we can have this step to ensure the correct formatting, but maybe not necessary
 
 warnings.filterwarnings('ignore')
 
+# to make sure the data directory exists
+os.makedirs(config.INTERIM_DATA_DIR, exist_ok=True)
+os.makedirs(config.PROCESSED_DATA_DIR, exist_ok=True)
 
-# to make sure the artifacts directory exists
-os.makedirs("artifacts",exist_ok=True)
-
-# load the raw data
-data = pd.read_csv(sys.argv[1])
-#print("Total rows:", data.count())
-#display(data.head(5))
+# load the raw data (fallback to ensure it works with Makefile)
+if len(sys.argv) > 1:
+    data = pd.read_csv(sys.argv[1])
+else:
+    data = pd.read_csv(config.RAW_DATA_PATH)
 
 
 # Time limit the data
-max_date = "2024-01-31"
-min_date = "2024-01-01"
+max_date = config.MAX_DATE_STR
+min_date = config.MIN_DATE_STR
 if not max_date:
     max_date = pd.to_datetime(datetime.datetime.now().date()).date()
 else:
@@ -43,7 +44,9 @@ data = data[(data["date_part"] >= min_date) & (data["date_part"] <= max_date)]
 min_date = data["date_part"].min()
 max_date = data["date_part"].max()
 date_limits = {"min_date": str(min_date), "max_date": str(max_date)}
-with open("./data/interrim/date_limits.json", "w") as f:
+
+
+with open(config.DATE_LIMITS_PATH, "w") as f:
     json.dump(date_limits, f)
 
 
@@ -84,11 +87,12 @@ cat_vars = data.loc[:, (data.dtypes=="object")]
 cont_vars = cont_vars.apply(lambda x: x.clip(lower = (x.mean()-2*x.std()),
                                              upper = (x.mean()+2*x.std())))
 outlier_summary = cont_vars.apply(utils.describe_numeric_col).T
-outlier_summary.to_csv('./data/interrim/outlier_summary.csv')
+
+outlier_summary.to_csv(config.OUTLIER_SUMMARY_PATH)
 
 # impute the data
 cat_missing_impute = cat_vars.mode(numeric_only=False, dropna=True)
-cat_missing_impute.to_csv("./data/interrim/cat_missing_impute.csv")
+cat_missing_impute.to_csv(config.CAT_MISSING_IMPUTE_PATH)
 
 # continuous variables missing values
 cont_vars = cont_vars.apply(utils.impute_missing_values)
@@ -100,13 +104,12 @@ cat_vars.apply(lambda x: pd.Series([x.count(), x.isnull().sum()], index = ['Coun
 
 
 # data standardisation
-scaler_path = "./data/interrim/scaler.pkl"
+scaler_path = config.SCALER_PATH
 
 scaler = MinMaxScaler()
 scaler.fit(cont_vars)
 
 joblib.dump(value=scaler, filename=scaler_path)
-print("Saved scaler in artifacts")
 
 cont_vars = pd.DataFrame(scaler.transform(cont_vars), columns=cont_vars.columns)
 #cont_vars
@@ -133,8 +136,9 @@ data['bin_source'] = data['source'].map(mapping)
 
 # data columns drift
 data_columns = list(data.columns)
-with open('./data/interrim/columns_drift.json','w+') as f:           
+
+with open(config.COLUMNS_DRIFT_PATH,'w+') as f:           
     json.dump(data_columns,f)
 
 # save the cleaned data
-data.to_csv('./data/processed/train_data_gold.csv', index=False)
+data.to_csv(config.TRAIN_DATA_GOLD_PATH, index=False)

@@ -45,25 +45,23 @@ from sklearn.model_selection import train_test_split
 from mlflow.tracking import MlflowClient
 import sys
 import utils
+from new_customers_classifier import config
 
-#Setting up information for thraching experiments
-current_date = datetime.datetime.now().strftime("%Y_%B_%d")
-artifact_path = "model"
-model_name = "lead_model"
-experiment_name = current_date
-
-os.makedirs("artifacts", exist_ok=True)
+os.makedirs(config.MODELS_DIR, exist_ok=True)
 os.makedirs("mlruns", exist_ok=True)
 os.makedirs("mlruns/.trash", exist_ok=True)
 
-mlflow.set_experiment(experiment_name)
+mlflow.set_experiment(config.EXPERIMENT_NAME)
 mlflow.sklearn.autolog(log_input_examples=True, log_models=False)
-experiment_id = mlflow.get_experiment_by_name(experiment_name).experiment_id
+experiment_id = mlflow.get_experiment_by_name(config.EXPERIMENT_NAME).experiment_id
 
 
 
 # Load data
-data_gold_path=sys.argv[1]
+if len(sys.argv) > 1:
+    data_gold_path = sys.argv[1]
+else:
+    data_gold_path = config.TRAIN_DATA_GOLD_PATH
 data = pd.read_csv(data_gold_path)
 
 
@@ -95,7 +93,8 @@ X_train, X_test, y_train, y_test = train_test_split(
 # Track XGB experiment    
 with mlflow.start_run(experiment_id=experiment_id) as run:
     model = XGBRFClassifier(random_state=42)
-    xgb_model_path = "./models/lead_model_xgb.pkl"
+
+    xgb_model_path = config.XGBOOST_MODEL_PKL
 
     params = {
         "learning_rate": uniform(1e-2, 3e-1),
@@ -117,7 +116,7 @@ with mlflow.start_run(experiment_id=experiment_id) as run:
  
     # log artifacts
     mlflow.log_metric('f1_score', f1_score(y_test, y_pred_test))
-    mlflow.log_artifacts("artifacts", artifact_path="model")
+    mlflow.log_artifacts(config.MODELS_DIR, artifact_path=config.ARTIFACT_PATH_NAME)
     mlflow.log_param("data_version", "00000")
     
     # store model for model interpretability
@@ -129,7 +128,8 @@ with mlflow.start_run(experiment_id=experiment_id) as run:
 # Track LR experiment 
 with mlflow.start_run(experiment_id=experiment_id) as run:
     model = LogisticRegression()
-    lr_model_path = "./models/lead_model_lr.pkl"
+
+    lr_model_path = config.LR_MODEL_PATH
 
     params = {
               'solver': ["newton-cg", "lbfgs", "liblinear", "sag", "saga"],
@@ -147,7 +147,7 @@ with mlflow.start_run(experiment_id=experiment_id) as run:
    
     # log artifacts
     mlflow.log_metric('f1_score', f1_score(y_test, y_pred_test))
-    mlflow.log_artifacts("artifacts", artifact_path="model")
+    mlflow.log_artifacts(config.MODELS_DIR, artifact_path=config.ARTIFACT_PATH_NAME)
     mlflow.log_param("data_version", "00000")
     
     # store model for model interpretability
@@ -181,11 +181,11 @@ conf_matrix = confusion_matrix(y_train, y_pred_train)
 model_results[lr_model_path] = model_classification_report
 
 # Save column list and model results
-column_list_path = './models/columns_list.json'
+column_list_path = config.COLUMNS_LIST_PATH
 with open(column_list_path, 'w+') as columns_file:
     columns = {'column_names': list(X_train.columns)}
     json.dump(columns, columns_file)
 
-model_results_path = "./models/model_results.json"
+model_results_path = config.MODEL_RESULTS_PATH
 with open(model_results_path, 'w+') as results_file:
     json.dump(model_results, results_file)
