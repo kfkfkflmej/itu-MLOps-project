@@ -6,16 +6,12 @@ import mlflow
 import pandas as pd
 from mlflow.tracking import MlflowClient
 import utils
+from new_customers_classifier import config
 
-# Configuration
-current_date = datetime.datetime.now().strftime("%Y_%B_%d")
-artifact_path = "model"
-model_name = "lead_model"
-experiment_name = current_date
 
 
 # Get best run in today's experiment (by f1_score)
-experiment = mlflow.get_experiment_by_name(experiment_name)
+experiment = mlflow.get_experiment_by_name(config.EXPERIMENT_NAME)
 experiment_ids = [experiment.experiment_id]
 
 experiment_best = mlflow.search_runs(
@@ -28,7 +24,7 @@ train_model_score = experiment_best["metrics.f1_score"]
 
 
 # Load per-model results and identify best model by weighted F1
-with open("./models/model_results.json", "r") as f:
+with open(config.MODEL_RESULTS_PATH, "r") as f:
     model_results = json.load(f)
 
 results_df = pd.DataFrame(
@@ -43,7 +39,7 @@ client = MlflowClient()
 
 prod_models = [
     mv
-    for mv in client.search_model_versions(f"name='{model_name}'")
+    for mv in client.search_model_versions(f"name='{config.MODEL_NAME}'")
     if dict(mv)["current_stage"] == "Production"
 ]
 prod_model_exists = len(prod_models) > 0
@@ -75,10 +71,11 @@ else:
 if run_id is not None:
     model_uri = "runs:/{run_id}/{artifact_path}".format(
         run_id=run_id,
-        artifact_path=artifact_path,
+        artifact_path=config.ARTIFACT_PATH_NAME,
     )
 
-    model_details = mlflow.register_model(model_uri=model_uri, name='Best_Lead_Model')
+    model_details = mlflow.register_model(model_uri=model_uri, name=config.MODEL_NAME)
+
     utils.wait_until_ready(model_details.name, model_details.version)
 
     model_details = dict(model_details)
@@ -89,5 +86,5 @@ deployment_config = {
     "model_version": model_details['version']
 }
 
-with open("./models/deployment_config.json", "w") as f:
+with open(config.DEPLOYMENT_CONFIG_PATH, "w") as f:
     json.dump(deployment_config, f)

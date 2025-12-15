@@ -40,12 +40,11 @@ install-hooks:
 
 ## Pull latest version of raw_data.csv from remote storage
 data-pull:
-	dvc pull raw_data.csv.dvc
+	dvc pull data/raw/raw_data.csv.dvc
 
-## track changes to raw_data.csv
 data-add:
-	dvc add $(PROJECT_NAME)/raw_data.csv
-	git add raw_data.csv.dvc .gitignore
+	dvc add data/raw/raw_data.csv
+	git add data/raw/raw_data.csv.dvc .gitignore
 
 #################################################################################
 # CODE QUALITY & TESTING                                                        #
