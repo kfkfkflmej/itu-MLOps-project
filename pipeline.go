@@ -25,77 +25,50 @@ func Build(ctx context.Context) error {
 	}
 	defer client.Close()
 
-	// 1. Setup Resources (Host files, caches)
+	// 1. Host Directory: Exclude output folders to prevent cache invalidation loop
 	src := client.Host().Directory(".")
-	pipCache := create_cache(client, "pip_cache")
 
-	// 2. Setup Container Base
-	python := create_container(client, "python:3.12")
-	python = set_directory(python, "/app", src)
-	python = set_workdir(python, "/app")
-	python = mount_cache(python, pipCache, "/root/.cache/pip")
+	pipCache := client.CacheVolume("pip_cache")
 
-	// 3. Prepare Environment
-	python = python.WithExec([]string{"mkdir", "-p", "new_customers_classifier"})
-	python = python.WithExec([]string{"touch", "new_customers_classifier/__init__.py"})
+	// 2. Setup Container Base & Install Dependencies
+	python := client.Container().
+		From("python:3.12").
+		// Mount cache first
+		WithMountedCache("/root/.cache/pip", pipCache).
+		// Mount source code
+		WithDirectory("/app", src).
+		WithWorkdir("/app").
+		// Install dependencies
+		WithExec([]string{"pip", "install", "."})
 
-	// 4. Install Dependencies
-	python = install_requirements(python)
-
-	// 5. Setup DVC (Git init + Pull)
+	// 3. Setup DVC (Git init + Pull)
 	python = pull_data(python)
 
-	// 6. Run ML Pipeline Stages
+	// 4. Run ML Pipeline Stages
 	python = run_script(python, "new_customers_classifier/preprocessing.py", "/app/data/raw/raw_data.csv")
 	python = run_script(python, "new_customers_classifier/model_dev.py", "/app/data/processed/train_data_gold.csv")
 	python = run_script(python, "new_customers_classifier/model_selection.py")
 	python = run_script(python, "new_customers_classifier/deploy.py")
 
-	// 7. Export Artifacts
-	if err := export_artifacts(python, ctx, "models"); err != nil {
-		return err
-	}
-
-	return nil
+	// 5. Export Artifacts
+	return export_artifacts(python, ctx, "models")
 }
 
-func create_container(client *dagger.Client, image string) *dagger.Container {
-	return client.Container().From(image)
-}
-
-func set_directory(container *dagger.Container, path string, src *dagger.Directory) *dagger.Container {
-	return container.WithDirectory(path, src)
-}
-
-func set_workdir(container *dagger.Container, workdir string) *dagger.Container {
-	return container.WithWorkdir(workdir)
-}
-
-func create_cache(client *dagger.Client, name string) *dagger.CacheVolume {
-	return client.CacheVolume(name)
-}
-
-func mount_cache(container *dagger.Container, cache *dagger.CacheVolume, mountPath string) *dagger.Container {
-	return container.WithMountedCache(mountPath, cache)
-}
-
-func install_requirements(container *dagger.Container) *dagger.Container {
-	return container.WithExec([]string{"pip", "install", "."})
-}
-
+// --- Helper Functions ---
 func pull_data(container *dagger.Container) *dagger.Container {
-	container = container.WithExec([]string{"git", "init"})
-	container = container.WithExec([]string{"dvc", "update", "data/raw/raw_data.csv.dvc"})
-
-	return container
+	return container.
+		WithExec([]string{"git", "init"}).
+		WithExec([]string{"dvc", "update", "data/raw/raw_data.csv.dvc"})
 }
 
 func run_script(container *dagger.Container, scriptPath string, args ...string) *dagger.Container {
+	// Helper to handle appending arguments cleanly
 	cmd := append([]string{"python", scriptPath}, args...)
 	return container.WithExec(cmd)
 }
 
 func export_artifacts(container *dagger.Container, ctx context.Context, exportPath string) error {
+	// Exports the 'models' directory from container to host
 	_, err := container.
 		Directory("models").
 		Export(ctx, exportPath)
