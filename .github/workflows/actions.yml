@@ -73,13 +73,13 @@ jobs:
         with:
           python-version: '3.12'
 
-      # Step 4: Install dependencies INCLUDING XGBOOST
+      # Step 4: Install dependencies
       - name: Install dependencies
         run: |
           pip install scikit-learn pandas joblib xgboost numpy
         shell: bash
 
-      # Step 5: Run the test logic (copied from the validator action)
+      # Step 5: Run the test logic
       - name: Run inference test
         run: |
           import pandas as pd

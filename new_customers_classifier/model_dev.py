@@ -123,7 +123,7 @@ with mlflow.start_run(experiment_id=experiment_id) as run:
     joblib.dump(value=model, filename=xgb_model_path)
         
     # Custom python model for predicting probability 
-    mlflow.pyfunc.log_model('model', python_model=utils.XGBWrapper(model))
+    mlflow.pyfunc.log_model('model', python_model=utils.XGBWrapper(best_model))
 
 # Track LR experiment 
 with mlflow.start_run(experiment_id=experiment_id) as run:
@@ -154,7 +154,7 @@ with mlflow.start_run(experiment_id=experiment_id) as run:
     joblib.dump(value=model, filename=lr_model_path)
         
     # Custom python model for predicting probability 
-    mlflow.pyfunc.log_model('model', python_model=utils.lr_wrapper(model))
+    mlflow.pyfunc.log_model('model', python_model=utils.lr_wrapper(best_model))
 
 # Retrieve experiment results
 client=MlflowClient()
