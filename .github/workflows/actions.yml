@@ -37,7 +37,7 @@ jobs:
       - name: Prepare Model for Validator
         run: |
           mkdir -p validation_upload
-          cp models/deployed_model/python_model.pkl validation_upload/model.pkl
+          cp models/deployed_model/model.pkl validation_upload/model.pkl
 
       - name: Upload Model for Validator
         uses: actions/upload-artifact@v4
