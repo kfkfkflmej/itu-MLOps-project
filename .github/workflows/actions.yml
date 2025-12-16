@@ -1,0 +1,122 @@
+name: GitHub Actions
+run-name: ${{ github.actor }} is testing out the train pipeline 🚀
+on: [push]
+
+jobs:
+  train-pipeline:
+    name: Train Model
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
+      - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
+      
+      - name: Check out repository code
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: 1.25.4
+          cache: false
+
+      - name: Train Model
+        uses: dagger/dagger-for-github@v6
+        with:
+          verb: run
+          args: go run pipeline.go
+          version: "0.19.7"
+        
+      # 1. Save EVERYTHING (for you to download/debug)
+      - name: Upload All Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: all-artifacts
+          path: models/
+
+      # 2. Prepare & Upload SPECIFIC file for the Validator Action
+      - name: Prepare Model for Validator
+        run: |
+          mkdir -p validation_upload
+          # Copy the clean pure model
+          cp models/deployed_model/model.pkl validation_upload/model.pkl
+
+      - name: Upload Model for Validator
+        uses: actions/upload-artifact@v4
+        with:
+          name: model
+          path: validation_upload/model.pkl
+  
+  test-pipeline:
+    name: Test Model
+    runs-on: ubuntu-latest
+    needs: train-pipeline
+    steps:
+      - run: echo "🎉 Starting inference test on the trained model..."    
+      
+      # Step 1: Clone the validator repo to get the test data
+      - name: Checkout Validator Repo (for data)
+        uses: actions/checkout@v4
+        with:
+          repository: lasselundstenjensen/itu-sdse-project-model-validator
+          path: validator-repo
+
+      # Step 2: Download your trained model
+      - name: Download model artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: model
+          path: model
+
+      # Step 3: Setup Python
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      # Step 4: Install dependencies
+      - name: Install dependencies
+        run: |
+          pip install scikit-learn pandas joblib xgboost numpy
+        shell: bash
+
+      # Step 5: Run the test logic
+      - name: Run inference test
+        run: |
+          import pandas as pd
+          import joblib
+          import numpy as np
+
+          # Load the downloaded model
+          print("Loading model...")
+          with open("model/model.pkl", "rb") as f:
+              model = joblib.load(f)
+
+          # Load the test data from the cloned validator repo
+          print("Loading test data...")
+          X = pd.read_csv("validator-repo/test/dataset/X_test.csv")
+          y = pd.read_csv("validator-repo/test/dataset/y_test.csv")
+
+          # Make predictions
+          y_pred = model.predict(X.head(5))
+          y_true = y.head(5).values.flatten()
+
+          # Print outputs
+          print("Predicted:", y_pred)
+          print("Actual:", y_true)
+
+          # Define expected outputs
+          expected_pred = np.array([0., 1., 0., 1., 0.])
+          expected_y = np.array([0., 1., 0., 1., 0.])
+
+          # Compare predicted outputs
+          if not np.array_equal(y_pred, expected_pred):
+              print("❌ Predicted values do not match expected values!")
+              exit(1)
+
+          # Compare actual outputs
+          if not np.array_equal(y_true, expected_y):
+              print("❌ Actual values do not match expected values!")
+              exit(1)
+
+          print("✅ Inference output matches the expected output.")
+        shell: python
