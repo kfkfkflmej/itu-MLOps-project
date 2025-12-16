@@ -95,5 +95,17 @@ Then all scripts should be executable.
 ```shell
 
 ```
+
+## Directly running the scripts locally
+Run all scripts from the project root directory to ensure paths resolve correctly.
+
+Execute scripts as modules using the `-m` flag:
+
+```shell
+python -m new_customers_classifier.<script_name>
+```
+
+Alternatively, use the Makefile targets (e.g. make train, make deploy).
+
 --------
 
