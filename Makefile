@@ -58,9 +58,9 @@ format:
 lint:
 	flake8 $(PROJECT_NAME)
 
-## Run tests (Pytest) on tests/ folder
+## Run pipeline test (verbose)
 test:
-	pytest tests/
+	dagger run go test -v
 
 #################################################################################
 # MODEL PIPELINE                                                                #
