@@ -34,7 +34,6 @@ results_df = pd.DataFrame(
 best_model = results_df.sort_values("f1-score", ascending=False).iloc[0].name
 
 
-# Inspect current production model, if any
 client = MlflowClient()
 
 prod_models = [

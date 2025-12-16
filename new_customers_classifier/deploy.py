@@ -5,7 +5,7 @@ import shutil
 import tempfile
 from mlflow.tracking import MlflowClient
 import mlflow
-import utils  # Needed to unpickle the custom wrapper
+import utils
 from new_customers_classifier import config
 
 # Initialize client
@@ -47,8 +47,7 @@ if utils.wait_for_deployment(client, model_name, model_version, config.DEPLOYMEN
         with open(wrapper_path, "rb") as f:
             wrapper_instance = pickle.load(f)
         
-        # Extract the inner pure model (sklearn/xgboost object)
-        # Fallback to full object if .model attribute is missing
+        # Extract pure model from wrapper
         pure_model = getattr(wrapper_instance, "model", wrapper_instance)
 
         # Define final destination

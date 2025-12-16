@@ -46,7 +46,6 @@ if len(sys.argv) > 1:
 else:
     data_gold_path = config.TRAIN_DATA_GOLD_PATH
     
-# We assume this data is ALREADY encoded and scaled from the previous script
 data = pd.read_csv(data_gold_path)
 
 model_features = [
@@ -109,7 +108,6 @@ with mlflow.start_run(experiment_id=experiment_id) as run:
     model_grid = RandomizedSearchCV(model, param_distributions=params, n_jobs=-1, verbose=3, n_iter=10, cv=10)
     model_grid.fit(X_train, y_train)
 
-    # Use the BEST trained model, not the empty one
     best_xgb_model = model_grid.best_estimator_
 
     y_pred_train_xgb = model_grid.predict(X_train)
