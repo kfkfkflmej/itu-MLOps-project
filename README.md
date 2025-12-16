@@ -55,21 +55,45 @@ This project is related to the Data Science in Production: MLOps and Software En
     | 
     ├── utils.py                 <- Helper functions used in the scripts
 ```
+# How to run actions
 
-# How to run the code
+# How to run the code locally
 
-## Artifact creation
+## Required tools and their respective versions
+For pipeline tests:
+- `docker` (Server): >= 4.54
+- `dagger` >= 0.19.8
+  
+For local development:
+- `go` - 1.25.0
+- `git` >= 2.43.0
+- `python` >= 3.12
+- `make` >= 3.81 
 
-#### Run in a container
+## Run the pipeline inside a container
 
+```shell
+dagger run go run pipeline.go
+```
+### Results
+The results of the pipeline are extracted into the 'models' folder. The container returns one pickle file from each model type developed in the pipeline, information for test performance in a JSON file, information for the final selected model and a subfolder with the best model (python_model.pkl).
+
+![Goal](./references/docs/result_view.png)
+
+## Set up for development
+
+### How to set up your environment 
+Install the tools needed for development.
+Then run the following in the terminal
+
+```shell
+pip install -e .
+```
+
+Then all scripts should be executable.
 #### Local testing
+```shell
 
-## Inference testing
-
-## Maintaining code quality
-
-## Code releases
-
-# Code decisions and reflections
+```
 --------
 
