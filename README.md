@@ -68,7 +68,7 @@ For local development:
 - `go` - 1.25.0
 - `git` >= 2.43.0
 - `python` >= 3.12
-- `make` >= 3.81 
+- `make` >= 4.4.1 
 
 ## Run the pipeline inside a container
 
@@ -80,6 +80,11 @@ The results of the pipeline are extracted into the 'models' folder. The containe
 
 ![Goal](./references/docs/result_view.png)
 
+### Pipeline testing
+```shell
+make test
+```
+
 ## Set up for development
 
 ### How to set up your environment 
@@ -90,13 +95,7 @@ Then run the following in the terminal
 pip install -e .
 ```
 
-Then all scripts should be executable.
-#### Local testing
-```shell
-
-```
-
-## Directly running the scripts locally
+### Directly running the scripts locally
 Run all scripts from the project root directory to ensure paths resolve correctly.
 
 Execute scripts as modules using the `-m` flag:
