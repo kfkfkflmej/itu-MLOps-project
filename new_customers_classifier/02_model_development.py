@@ -28,7 +28,7 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 from mlflow.tracking import MlflowClient
 import sys
-import utils
+from new_customers_classifier import utils
 from new_customers_classifier import config
 
 # --- Setup ---
