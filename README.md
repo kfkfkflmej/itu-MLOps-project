@@ -56,6 +56,8 @@ This project is related to the Data Science in Production: MLOps and Software En
     ├── utils.py                 <- Helper functions used in the scripts
 ```
 # How to run actions
+GitHub will run the workflow we have defined in the actions page. Inside the workflow, we have train and test jobs that build and run the project on the cloud using the main branch version.
+The action is triggered on a pull request.
 
 # How to run the code locally
 
@@ -94,11 +96,15 @@ Then run the following in the terminal
 ```shell
 pip install -e .
 ```
-
+### Download raw data
+Use the following command to make sure you have the data needed for the development
+```shell
+dvc pull
+```
 ### Directly running the scripts locally
 Run all scripts from the project root directory to ensure paths resolve correctly.
 
-Execute scripts as modules using the `-m` flag:
+Each script is executable as modules using the `-m` flag:
 
 ```shell
 python -m new_customers_classifier.<script_name>
