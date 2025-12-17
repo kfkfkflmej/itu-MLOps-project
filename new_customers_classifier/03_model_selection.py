@@ -5,7 +5,7 @@ import time
 import mlflow
 import pandas as pd
 from mlflow.tracking import MlflowClient
-import utils
+from new_customers_classifier import utils
 from new_customers_classifier import config
 
 

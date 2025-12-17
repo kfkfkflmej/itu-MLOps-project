@@ -5,7 +5,7 @@ import shutil
 import tempfile
 from mlflow.tracking import MlflowClient
 import mlflow
-import utils
+from new_customers_classifier import utils
 from new_customers_classifier import config
 
 # Initialize client

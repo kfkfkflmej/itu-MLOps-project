@@ -6,7 +6,7 @@ import json
 import numpy as np
 from sklearn.preprocessing import MinMaxScaler
 import joblib
-import utils
+from new_customers_classifier import utils
 import sys
 from new_customers_classifier import config
 

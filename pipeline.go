@@ -45,10 +45,10 @@ func Build(ctx context.Context, isTesting bool) error {
 	python = pull_data(python)
 
 	// 4. Run ML Pipeline Stages
-	python = run_script(python, "new_customers_classifier/preprocessing.py", "/app/data/raw/raw_data.csv")
-	python = run_script(python, "new_customers_classifier/model_dev.py", "/app/data/processed/train_data_gold.csv")
-	python = run_script(python, "new_customers_classifier/model_selection.py")
-	python = run_script(python, "new_customers_classifier/deploy.py")
+	python = run_script(python, "new_customers_classifier/01_preprocessing.py", "/app/data/raw/raw_data.csv")
+	python = run_script(python, "new_customers_classifier/02_model_development.py", "/app/data/processed/train_data_gold.csv")
+	python = run_script(python, "new_customers_classifier/03_model_selection.py")
+	python = run_script(python, "new_customers_classifier/04_deploy.py")
 
 	// 5. Verify or Export (Testing Switch)
 	if isTesting {
