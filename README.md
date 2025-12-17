@@ -57,7 +57,7 @@ This project is related to the Data Science in Production: MLOps and Software En
 ```
 # How to run actions
 GitHub will run the workflow we have defined in the actions page. Inside the workflow, we have train and test jobs that build and run the project on the cloud using the main branch version.
-The action is triggered on a pull request.
+The action is triggered on a pull request or a push to main.
 
 # How to run the code locally
 
@@ -78,7 +78,7 @@ For local development:
 dagger run go run pipeline.go
 ```
 ### Results
-The results of the pipeline are extracted into the 'models' folder. The container returns one pickle file from each model type developed in the pipeline, information for test performance in a JSON file, information for the final selected model and a subfolder with the best model (python_model.pkl).
+The results of the pipeline are extracted into the 'models' folder. The container returns one pickle file from each model type developed in the pipeline, information for test performance in a JSON file, information for the final selected model and a subfolder with the best model (model.pkl).
 
 ![Goal](./references/docs/result_view.png)
 
